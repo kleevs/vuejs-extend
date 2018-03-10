@@ -1,0 +1,15 @@
+[{
+	"main": "src/index",
+	"out": "dist/vue.extend",
+	"declaration": true,
+	"option": {
+		"name": "Vue",
+	  "paths": {
+			"node_modules": "node_modules"
+	  },
+	  "ignores": {
+			"node_modules/jquery/dist/jquery": "$",
+			"node_modules/vue/dist/vue": "Vue"
+	  }
+	}
+  }]

@@ -1,0 +1,28 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "code",    
+    "experimentalDecorators": true,
+    "sourceMap": true,
+    "declaration": true,
+    "module": "umd",
+    "moduleResolution": "classic",
+    "emitDecoratorMetadata": true,
+    "target": "es6",
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "lib": [
+      "es2016",
+      "dom"
+    ],
+    "outDir": "src"    
+  },
+  "include" : [ 
+    "./code/**/*.ts"
+  ],
+  "exclude" : [
+    "./node_modules",
+    "./src"
+  ]
+}
