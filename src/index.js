@@ -15,10 +15,9 @@
     const $ = require("node_modules/jquery/dist/jquery");
     const Vue = require("node_modules/vue/dist/vue");
     __export(require("node_modules/vue/dist/vue"));
-    let registeredView = [];
     Vue.Component = (options) => {
         var html = new Promise((resolve, reject) => {
-            options.html && resolve(options.html);
+            options.html && setTimeout(() => resolve(options.html), 1000);
             !options.html && options.template && (() => {
                 $("<div>").load(`/${options.template}`, (template, status) => {
                     status == "error" && (reject() || true) ||
@@ -27,28 +26,33 @@
             })();
         });
         return (Component) => {
-            var computed = {};
-            for (var key in options.computed) {
-                ((key) => {
-                    computed[key] = options.computed[key] instanceof Function ?
-                        function () { return options.computed[key].apply(this._data, arguments); } :
-                        (() => {
-                            var descriptor = {};
-                            descriptor.set = options.computed[key].set && function () { return options.computed[key].set.apply(this._data, arguments); };
-                            descriptor.get = options.computed[key].get && function () { return options.computed[key].get.apply(this._data, arguments); };
-                            return descriptor;
-                        })();
-                })(key);
-            }
-            registeredView.push({
-                id: html.then(template => {
-                    Vue.component(options.id, {
-                        template: template,
-                        data: () => new Component(),
-                        computed: computed
-                    });
-                    return options.id;
-                })
+            Vue.component(options.id, {
+                template: "<div v-template='{ template: template, data: data }'>loading...</div>",
+                directives: {
+                    "template": (el, binding, vnode) => {
+                        if (binding.value && binding.value !== binding.oldValue && binding.oldValue && binding.value.template !== binding.oldValue.template) {
+                            var view = new Vue({
+                                el: $(binding.value.template)[0],
+                                data: binding.value.data.data,
+                                computed: binding.value.data.computed
+                            });
+                            $(el).html("");
+                            $(el).append(view.$el);
+                        }
+                    }
+                },
+                data: () => {
+                    var instance = new Component();
+                    var data = {
+                        template: undefined,
+                        data: {
+                            data: instance,
+                            computed: options.computed(instance)
+                        }
+                    };
+                    html.then(template => data.template = template);
+                    return data;
+                }
             });
         };
     };

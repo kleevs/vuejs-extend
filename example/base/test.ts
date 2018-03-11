@@ -3,8 +3,10 @@ declare let Vue, $;
 @Vue.Component({
     id: "vue-comp-test",
     html: "<div>message = {{ message }} et pop = {{ pop }} <input v-model='message'></div>",
-    computed: {
-        pop: function() { return this.pop2(); }
+    computed: (test: Test) => {
+        return {
+            pop: () => test.pop2()
+        };
     }
 })
 class Test {
@@ -17,8 +19,6 @@ class Test {
     pop2() { return "coco " + this.message; }
 }
 
-setTimeout(() => {
-    $("#app").append(new Vue({
-        el: $("<div is='vue-comp-test'></div>")[0]
-    }).$el);
-}, 1000);
+$("#app").append(new Vue({
+    el: $("<div is='vue-comp-test'></div>")[0]
+}).$el);
