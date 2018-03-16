@@ -1,9 +1,10 @@
-declare let Vue, $;
+import { Component, config, start } from 'dist/vue.extend';
+declare let $;
 
-@Vue.Component({
-    id: "vue-comp-test",
+@Component<Test>({
+    name: "vue-comp-test",
     html: "<div>message = {{ message }} et pop = {{ pop }} <input v-model='message'></div>",
-    computed: (test: Test) => {
+    computed: (test) => {
         return {
             pop: () => test.pop2()
         };
@@ -19,6 +20,4 @@ class Test {
     pop2() { return "coco " + this.message; }
 }
 
-$("#app").append(new Vue({
-    el: $("<div is='vue-comp-test'></div>")[0]
-}).$el);
+start("#app", Test);
